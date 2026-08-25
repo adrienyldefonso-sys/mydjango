@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Detalles del Objeto{% endblock %}
+
+{% block content %}
+    <section>
+        <h2>Detalles del Objeto Encontrado</h2>
+        
+        <article style="border: 1px solid #ccc; padding: 20px; margin: 20px 0;">
+            <h3>{{ objeto.nombre }}</h3>
+            
+            <dl>
+                <dt><strong>Descripción:</strong></dt>
+                <dd>{{ objeto.descripcion }}</dd>
+                
+                <dt><strong>Ubicación:</strong></dt>
+                <dd>{{ objeto.ubicacion }}</dd>
+                
+                <dt><strong>Fecha encontrado:</strong></dt>
+                <dd>{{ objeto.fecha }}</dd>
+                
+                <dt><strong>Contacto:</strong></dt>
+                <dd>{{ objeto.contacto }}</dd>
+            </dl>
+        </article>
+        
+        <p>
+            <a href="{% url 'semana2:objeto_list' %}">Volver al listado</a>
+        </p>
+    </section>
+{% endblock %}

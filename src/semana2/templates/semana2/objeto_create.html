@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Objeto Encontrado{% endblock %}
+
+{% block content %}
+    <section>
+        <h2>Registrar Nuevo Objeto Encontrado</h2>
+        
+        <form method="POST" style="max-width: 500px;">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div style="color: red; margin-bottom: 15px;">
+                    <strong>Errores en el formulario:</strong>
+                    <ul>
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            {% for field in form %}
+                <div style="margin-bottom: 15px;">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                            {% for error in field.errors %}
+                                {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <div>
+                <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Registrar objeto
+                </button>
+                <a href="{% url 'semana2:objeto_list' %}" style="margin-left: 10px; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </section>
+{% endblock %}

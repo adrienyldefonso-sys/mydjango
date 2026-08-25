@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Objetos Encontrados{% endblock %}
+
+{% block content %}
+    <section>
+        <h2>Objetos Encontrados</h2>
+        <p><a href="{% url 'semana2:objeto_create' %}">+ Registrar nuevo objeto</a></p>
+        
+        <div style="margin: 20px 0; padding: 15px; background-color: #f5f5f5; border-radius: 4px;">
+            <form method="GET" style="display: flex; gap: 10px;">
+                <input 
+                    type="text" 
+                    name="q" 
+                    placeholder="Buscar por nombre o ubicación..." 
+                    value="{{ termino_busqueda }}"
+                    style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
+                >
+                <button type="submit" style="padding: 8px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Buscar
+                </button>
+                {% if termino_busqueda %}
+                    <a href="{% url 'semana2:objeto_list' %}" style="padding: 8px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px;">
+                        Limpiar
+                    </a>
+                {% endif %}
+            </form>
+        </div>
+        
+        {% if termino_busqueda %}
+            <p style="color: #666; margin: 10px 0;">
+                Resultados de búsqueda para: <strong>"{{ termino_busqueda }}"</strong> ({{ total_resultados }} encontrado{{ total_resultados|pluralize }})
+            </p>
+        {% endif %}
+        
+        {% if objetos %}
+            <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; margin-top: 15px;">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Ubicación</th>
+                        <th>Fecha</th>
+                        <th>Contacto</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for objeto in objetos %}
+                        <tr>
+                            <td>{{ objeto.nombre }}</td>
+                            <td>{{ objeto.descripcion }}</td>
+                            <td>{{ objeto.ubicacion }}</td>
+                            <td>{{ objeto.fecha }}</td>
+                            <td>{{ objeto.contacto }}</td>
+                            <td>
+                                <a href="{% url 'semana2:objeto_detail' objeto.id %}">Ver detalles</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p style="color: #d32f2f; margin-top: 20px;">
+                {% if termino_busqueda %}
+                    No hay objetos que coincidan con "{{ termino_busqueda }}".
+                {% else %}
+                    No hay objetos registrados.
+                {% endif %}
+            </p>
+        {% endif %}
+    </section>
+{% endblock %}
