@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Registrar Objeto Encontrado{% endblock %}
+{% block title %}Crear Ubicación{% endblock %}
 
 {% block content %}
     <section class="card shadow-sm border-0">
         <div class="card-body p-4">
-            <h2 class="mb-4">Registrar Nuevo Objeto Encontrado</h2>
+            <h2 class="mb-4">Registrar Nueva Ubicación</h2>
 
-            <form method="POST" class="mx-auto" style="max-width: 700px;">
+            <form method="POST" class="mx-auto" style="max-width: 600px;">
                 {% csrf_token %}
 
                 {% if form.non_field_errors %}
@@ -35,18 +35,12 @@
                     </div>
                 {% endfor %}
 
-                <div class="mb-3">
-                    <a href="{% url 'semana2:ubicacion_create' %}" class="btn btn-outline-primary btn-sm">
-                        + Crear nueva ubicación
-                    </a>
-                </div>
-
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        Registrar objeto
+                    <button type="submit" class="btn btn-success">
+                        Guardar ubicación
                     </button>
-                    <a href="{% url 'semana2:objeto_list' %}" class="btn btn-secondary">
-                        Cancelar
+                    <a href="{% url 'semana2:objeto_create' %}" class="btn btn-secondary">
+                        Volver
                     </a>
                 </div>
             </form>

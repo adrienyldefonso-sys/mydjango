@@ -1,103 +1,87 @@
 from django import forms
 
+from .models import ObjetoEncontrado, Ubicacion
 
-class ObjetoEncontradoForm(forms.Form):
-    """Formulario para registrar objetos encontrados"""
-    
-    nombre = forms.CharField(
-        max_length=200,
-        required=True,
-        label="Nombre del objeto",
-        widget=forms.TextInput(attrs={
-            'class': 'form-input',
-            'placeholder': 'Ej: Mochila negra',
-        })
-    )
-    
-    descripcion = forms.CharField(
-        required=True,
-        label="Descripción",
-        widget=forms.Textarea(attrs={
-            'class': 'form-textarea',
-            'placeholder': 'Describe características como color, marca, tamaño o elementos distintivos',
-            'rows': 4,
-        })
-    )
-    
-    ubicacion = forms.CharField(
-        max_length=200,
-        required=True,
-        label="Ubicación",
-        widget=forms.TextInput(attrs={
-            'class': 'form-input',
-            'placeholder': 'Ej: Biblioteca, Aula 305, Cafetería',
-        })
-    )
-    
-    fecha = forms.CharField(
-        max_length=10,
-        required=True,
-        label="Fecha encontrado",
-        widget=forms.TextInput(attrs={
-            'class': 'form-input',
-            'placeholder': 'DD/MM/YYYY',
-        })
-    )
-    
-    contacto = forms.CharField(
-        max_length=200,
-        required=True,
-        label="Datos de contacto",
-        widget=forms.TextInput(attrs={
-            'class': 'form-input',
-            'placeholder': 'Nombre y teléfono o correo',
-        })
-    )
-    
+
+class UbicacionForm(forms.ModelForm):
+    """Formulario para crear nuevas ubicaciones."""
+
+    class Meta:
+        model = Ubicacion
+        fields = ['nombre', 'descripcion']
+        widgets = {
+            'nombre': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Ej: Biblioteca, Patio principal, Aula 305',
+            }),
+            'descripcion': forms.Textarea(attrs={
+                'class': 'form-textarea',
+                'placeholder': 'Describe esta ubicación o su uso dentro de la institución',
+                'rows': 3,
+            }),
+        }
+
     def clean_nombre(self):
-        """Valida que el nombre no esté vacío después de limpiar espacios"""
         nombre = self.cleaned_data.get('nombre', '').strip()
         if not nombre:
-            raise forms.ValidationError("El nombre del objeto es obligatorio")
+            raise forms.ValidationError('El nombre de la ubicación es obligatorio')
         return nombre
-    
+
+
+class ObjetoEncontradoForm(forms.ModelForm):
+    """Formulario para registrar objetos encontrados."""
+
+    fecha = forms.DateField(
+        input_formats=['%d/%m/%Y'],
+        label='Fecha encontrado',
+        widget=forms.DateInput(
+            format='%d/%m/%Y',
+            attrs={
+                'class': 'form-input',
+                'placeholder': 'DD/MM/YYYY',
+            }
+        )
+    )
+    ubicacion = forms.ModelChoiceField(
+        queryset=Ubicacion.objects.all().order_by('nombre'),
+        label='Ubicación',
+        empty_label='Seleccione una ubicación',
+        widget=forms.Select(attrs={'class': 'form-input'})
+    )
+
+    class Meta:
+        model = ObjetoEncontrado
+        fields = ['nombre', 'descripcion', 'ubicacion', 'fecha', 'contacto']
+        widgets = {
+            'nombre': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Ej: Mochila negra',
+            }),
+            'descripcion': forms.Textarea(attrs={
+                'class': 'form-textarea',
+                'placeholder': 'Describe características como color, marca, tamaño o elementos distintivos',
+                'rows': 4,
+            }),
+            'contacto': forms.TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Nombre y teléfono o correo',
+            }),
+        }
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre', '').strip()
+        if not nombre:
+            raise forms.ValidationError('El nombre del objeto es obligatorio')
+        return nombre
+
     def clean_descripcion(self):
-        """Valida que la descripción tenga al menos 5 caracteres"""
         descripcion = self.cleaned_data.get('descripcion', '').strip()
         if len(descripcion) < 5:
-            raise forms.ValidationError("La descripción debe tener al menos 5 caracteres")
+            raise forms.ValidationError('La descripción debe tener al menos 5 caracteres')
         return descripcion
-    
-    def clean_ubicacion(self):
-        """Valida que la ubicación no esté vacía"""
-        ubicacion = self.cleaned_data.get('ubicacion', '').strip()
-        if not ubicacion:
-            raise forms.ValidationError("La ubicación es obligatoria")
-        return ubicacion
-    
-    def clean_fecha(self):
-        """Valida que la fecha tenga el formato DD/MM/YYYY"""
-        fecha = self.cleaned_data.get('fecha', '').strip()
-        if not fecha:
-            raise forms.ValidationError("La fecha es obligatoria")
-        
-        # Validar formato DD/MM/YYYY
-        partes = fecha.split('/')
-        if len(partes) != 3:
-            raise forms.ValidationError("La fecha debe estar en formato DD/MM/YYYY")
-        
-        try:
-            dia, mes, año = int(partes[0]), int(partes[1]), int(partes[2])
-            if not (1 <= dia <= 31 and 1 <= mes <= 12 and año > 2000):
-                raise ValueError
-        except (ValueError, IndexError):
-            raise forms.ValidationError("Fecha inválida. Use formato DD/MM/YYYY con valores válidos")
-        
-        return fecha
-    
+
     def clean_contacto(self):
-        """Valida que el contacto no esté vacío"""
         contacto = self.cleaned_data.get('contacto', '').strip()
         if not contacto:
-            raise forms.ValidationError("Los datos de contacto son obligatorios")
+            raise forms.ValidationError('Los datos de contacto son obligatorios')
         return contacto
