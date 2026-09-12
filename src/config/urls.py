@@ -22,4 +22,5 @@ urlpatterns = [
     path('', include('core.urls')),
     path('objetos/', include('semana2.urls')),
     path('optica/', include('semana3.urls')),
+    path('optica-v2/', include('semana4.urls')),
 ]

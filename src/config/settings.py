@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'core',
     'semana2',
     'semana3',
+    'semana4',
 ]
 
 MIDDLEWARE = [
