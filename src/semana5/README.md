@@ -188,3 +188,7 @@ python manage.py test semana4
 ```
 
 Actualmente la aplicación no contiene pruebas automatizadas específicas, por lo que el comando de tests puede indicar `Ran 0 tests`.
+
+## Qué resuelve el Django Admin
+
+Para este sistema de óptica, Django Admin resuelve automáticamente el CRUD de las siete entidades, las validaciones de los campos, los filtros y búsquedas de los listados, y la edición de la ficha médica y de las ventas relacionadas desde la pantalla del cliente mediante `StackedInline` y `TabularInline`. Una aplicación para el cliente final todavía necesitaría Views y Templates propios para ofrecer una interfaz sin acceso al Admin, aplicar la lógica de negocio específica de la óptica, presentar el diseño visual de la marca, gestionar permisos diferenciados por rol y generar reportes o flujos personalizados.
