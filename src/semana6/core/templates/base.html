@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema Óptica{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --success-dark: #059669;
+            --secondary: #64748b;
+            --secondary-dark: #475569;
+            --bg-soft: #eef4ff;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --muted: #475569;
+            --shadow: rgba(37, 99, 235, 0.18);
+            --danger: #dc2626;
+        }
+
+        body {
+            background: linear-gradient(180deg, #f3f7ff 0%, #eef4ff 100%);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.18);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+        }
+
+        .card {
+            border: none;
+            border-radius: 18px;
+            background: var(--card-bg);
+            box-shadow: 0 14px 32px var(--shadow);
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1px solid rgba(37, 99, 235, 0.12);
+            border-radius: 18px;
+            padding: 1.5rem 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-badge {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08rem;
+            text-transform: uppercase;
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(37,99,235,0.12);
+            color: var(--primary-dark);
+            margin-bottom: 0.8rem;
+        }
+
+        .btn {
+            border-radius: 12px;
+            padding: 0.7rem 1.2rem;
+            font-weight: 600;
+            border: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.22);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.22);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            color: white;
+            box-shadow: 0 10px 20px rgba(100, 116, 139, 0.22);
+        }
+
+        .btn-outline-primary {
+            border: 1.5px solid var(--primary);
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.04);
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, var(--danger) 100%);
+            color: white;
+            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.18);
+        }
+
+        .btn-outline-danger {
+            border: 1.5px solid var(--danger);
+            color: var(--danger);
+            background: rgba(220, 38, 38, 0.04);
+        }
+
+        .btn-outline-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .form-control,
+        .form-select,
+        .form-label {
+            border-radius: 12px;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
+            border: none;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(37, 99, 235, 0.04);
+        }
+
+        .bg-light {
+            background-color: var(--bg-soft) !important;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <header class="text-white py-3 mb-4">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <h1 class="h3 mb-0 navbar-brand">Sistema de Óptica</h1>
+                <nav class="d-flex gap-3 flex-wrap">
+                    <a class="nav-link" href="{% url 'semana3:listado_clientes' %}">Clientes</a>
+                    <a class="nav-link" href="{% url 'semana3:listado_optometristas' %}">Optometristas</a>
+                    <a class="nav-link" href="{% url 'semana3:listado_productos' %}">Productos</a>
+                    <a class="nav-link" href="{% url 'semana3:listado_sucursales' %}">Sucursales</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <main class="container py-4">
+        {% block content %}{% endblock %}
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

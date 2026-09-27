@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Detalles del Objeto{% endblock %}
+
+{% block content %}
+    <section class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <h2 class="mb-4">Detalles del Objeto Encontrado</h2>
+
+            <article class="border rounded p-4 bg-light">
+                <h3 class="mb-3">{{ objeto.nombre }}</h3>
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-3 fw-semibold">Descripción:</dt>
+                    <dd class="col-sm-9">{{ objeto.descripcion }}</dd>
+
+                    <dt class="col-sm-3 fw-semibold">Ubicación:</dt>
+                    <dd class="col-sm-9">{{ objeto.ubicacion.nombre }}</dd>
+
+                    <dt class="col-sm-3 fw-semibold">Fecha encontrado:</dt>
+                    <dd class="col-sm-9">{{ objeto.fecha }}</dd>
+
+                    <dt class="col-sm-3 fw-semibold">Contacto:</dt>
+                    <dd class="col-sm-9">{{ objeto.contacto }}</dd>
+                </dl>
+            </article>
+
+            <div class="mt-4">
+                <a href="{% url 'semana2:objeto_list' %}" class="btn btn-primary">Volver al listado</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% url 'semana5:listado_clientes' as cancel_url %}
+    {% include "semana5/partials/_confirm_delete.html" with objeto=objeto titulo=titulo cancel_url=cancel_url %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Eliminar sucursal{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <div class="section-badge">Confirmación</div>
+        <h2 class="mb-1">{{ titulo }}</h2>
+        <p class="text-muted mb-0">Esta acción eliminará la sede de la óptica del sistema.</p>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4 text-center">
+            <h3 class="mb-3">¿Deseas eliminar esta sucursal?</h3>
+            <p class="lead mb-4">Se quitará la sucursal <strong>{{ objeto }}</strong> del registro general.</p>
+            <form method="post" class="d-flex justify-content-center gap-2 flex-wrap">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+                <a href="{% url 'semana3:listado_sucursales' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

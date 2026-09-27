@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Objetos Encontrados{% endblock %}
+
+{% block content %}
+    <section class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h2 class="mb-0">Objetos Encontrados</h2>
+                <a href="{% url 'semana2:objeto_create' %}" class="btn btn-primary">+ Registrar nuevo objeto</a>
+            </div>
+
+            <div class="card bg-light mb-3">
+                <div class="card-body">
+                    <form method="GET" class="row g-2 align-items-center">
+                        <div class="col-md-9">
+                            <input
+                                type="text"
+                                name="q"
+                                class="form-control"
+                                placeholder="Buscar por nombre o ubicación..."
+                                value="{{ termino_busqueda }}"
+                            >
+                        </div>
+                        <div class="col-md-3 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary w-100">Buscar</button>
+                            {% if termino_busqueda %}
+                                <a href="{% url 'semana2:objeto_list' %}" class="btn btn-secondary w-100">Limpiar</a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% if termino_busqueda %}
+                <p class="text-muted mb-3">
+                    Resultados de búsqueda para: <strong>"{{ termino_busqueda }}"</strong> ({{ total_resultados }} encontrado{{ total_resultados|pluralize }})
+                </p>
+            {% endif %}
+
+            {% if objetos %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Ubicación</th>
+                                <th>Fecha</th>
+                                <th>Contacto</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for objeto in objetos %}
+                                <tr>
+                                    <td>{{ objeto.nombre }}</td>
+                                    <td>{{ objeto.descripcion }}</td>
+                                    <td>{{ objeto.ubicacion.nombre }}</td>
+                                    <td>{{ objeto.fecha }}</td>
+                                    <td>{{ objeto.contacto }}</td>
+                                    <td>
+                                        <a href="{% url 'semana2:objeto_detail' objeto.id %}" class="btn btn-sm btn-outline-primary">Ver detalles</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-warning mt-3 mb-0">
+                    {% if termino_busqueda %}
+                        No hay objetos que coincidan con "{{ termino_busqueda }}".
+                    {% else %}
+                        No hay objetos registrados.
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
