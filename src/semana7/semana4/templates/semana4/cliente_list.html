@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Clientes{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <div class="section-badge">Pacientes</div>
+        <h2 class="mb-1">Listado de clientes</h2>
+        <p class="text-muted mb-0">Consulta, busca y administra la información de cada paciente de la óptica.</p>
+    </div>
+
+    <section class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div>
+                    <h3 class="mb-0">Clientes registrados</h3>
+                    <small class="text-muted">Manten los datos de contacto y la información personal.</small>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'semana4:listado_clientes_relacionados' %}" class="btn btn-outline-primary">Ver relaciones</a>
+                    <a href="{% url 'semana4:crear_cliente' %}" class="btn btn-primary">+ Nuevo cliente</a>
+                </div>
+            </div>
+
+            <form method="get" class="row g-2 align-items-center mb-4">
+                <div class="col-md-9">
+                    <input type="text" name="q" class="form-control" value="{{ query }}" placeholder="Buscar por apellido o DNI...">
+                </div>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100">Buscar</button>
+                    {% if query %}
+                        <a href="{% url 'semana4:listado_clientes' %}" class="btn btn-secondary w-100">Limpiar</a>
+                    {% endif %}
+                </div>
+            </form>
+
+            {% if clientes %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Cliente</th>
+                                <th>DNI</th>
+                                <th>Teléfono</th>
+                                <th>Fecha nacimiento</th>
+                                <th>Ficha</th>
+                                <th>Historial</th>
+                                <th>Ventas</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cliente in clientes %}
+                                <tr>
+                                    <td>{{ cliente.nombres }} {{ cliente.apellidos }}</td>
+                                    <td>{{ cliente.dni }}</td>
+                                    <td>{{ cliente.telefono|default:'-' }}</td>
+                                    {# Formato día/mes/año para presentar la fecha de nacimiento en el formato local. #}
+                                    <td>{{ cliente.fecha_nacimiento|date:"d/m/Y"|default:'-' }}</td>
+                                    <td>
+                                        {% if cliente.ficha_medica %}
+                                            {{ cliente.ficha_medica.tipo_seguro|default:'Registrada' }}
+                                        {% else %}
+                                            <span class="text-muted">Sin ficha</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ cliente.historiales.count }} historial{{ cliente.historiales.count|pluralize }}
+                                        <a href="{% url 'semana4:listado_historiales' cliente.id %}" class="btn btn-sm btn-outline-primary">Ver</a>
+                                        <a href="{% url 'semana4:crear_historial' cliente.id %}" class="btn btn-sm btn-success">Nuevo</a>
+                                    </td>
+                                    <td>
+                                        {% if cliente.ventas.all %}
+                                            {{ cliente.ventas.count }} venta{{ cliente.ventas.count|pluralize }}
+                                            {# La lista de productos se expande solo en la vista de clientes relacionados. #}
+                                            {% if solo_relaciones %}
+                                                <ul class="mb-0 ps-3 small">
+                                                    {% for venta in cliente.ventas.all %}
+                                                        <li>
+                                                            {{ venta.producto }}
+                                                            ({{ venta.cantidad }})
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="text-muted">Sin ventas</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'semana4:editar_cliente' cliente.id %}" class="btn btn-sm btn-outline-primary">Editar</a>
+                                        <a href="{% url 'semana4:eliminar_cliente' cliente.id %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-warning mb-0">
+                    {% if query %}
+                        No se encontraron clientes con la búsqueda realizada.
+                    {% else %}
+                        Aún no hay clientes registrados. Puedes crear el primero con el botón de arriba.
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

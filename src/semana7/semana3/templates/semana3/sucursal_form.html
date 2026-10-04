@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Sucursales{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <div class="section-badge">Ubicación</div>
+        <h2 class="mb-1">{{ titulo }}</h2>
+        <p class="text-muted mb-0">Registra la información de la sede para mantener el control operativo.</p>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                <div>
+                    <h3 class="mb-0">Datos de la sucursal</h3>
+                    <small class="text-muted">Incluye nombre, dirección y teléfono de contacto.</small>
+                </div>
+                <a href="{% url 'semana3:listado_sucursales' %}" class="btn btn-secondary">Volver al listado</a>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    {% for field in form %}
+                        <div class="col-md-6">
+                            <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1">{{ field.errors|join:', ' }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Guardar sucursal</button>
+                    <a href="{% url 'semana3:listado_sucursales' %}" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

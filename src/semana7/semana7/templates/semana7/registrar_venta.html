@@ -1,0 +1,44 @@
+{% extends 'semana7/base.html' %}
+
+{% block content %}
+<h2>Registrar venta con transacción segura</h2>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}error{% else %}success{% endif %}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    <label for="cliente_id">Cliente</label>
+    <select name="cliente_id" id="cliente_id" required>
+        <option value="">Seleccione un cliente</option>
+        {% for cliente in clientes %}
+            <option value="{{ cliente.id }}">{{ cliente.nombres }} {{ cliente.apellidos }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="producto_id">Producto</label>
+    <select name="producto_id" id="producto_id" required>
+        <option value="">Seleccione un producto</option>
+        {% for producto in productos %}
+            <option value="{{ producto.id }}">{{ producto.nombre }} - Stock: {{ producto.stock }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="cantidad">Cantidad</label>
+    <input type="number" name="cantidad" id="cantidad" min="1" value="1" required>
+
+    <p><button type="submit">Registrar venta</button></p>
+</form>
+
+<h3>Clientes con ventas pendientes</h3>
+<ul>
+    {% for cliente in clientes_pendientes %}
+        <li>{{ cliente.nombres }} {{ cliente.apellidos }}</li>
+    {% empty %}
+        <li>No hay clientes con ventas pendientes.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

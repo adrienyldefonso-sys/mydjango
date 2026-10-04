@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 7 ORM</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; background: #f5f7fb; color: #1f2937; }
+        .container { max-width: 960px; margin: 0 auto; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+        h2, h3 { color: #111827; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { border: 1px solid #d1d5db; padding: 0.75rem; text-align: left; }
+        th { background: #e5e7eb; }
+        .alert { padding: 0.75rem 1rem; margin-bottom: 1rem; border-radius: 8px; }
+        .success { background: #dcfce7; color: #166534; }
+        .error { background: #fee2e2; color: #991b1b; }
+        form { margin-top: 1rem; }
+        label { display: block; margin: 0.75rem 0 0.35rem; font-weight: 600; }
+        select, input { width: 100%; padding: 0.6rem 0.75rem; border-radius: 7px; border: 1px solid #cbd5e1; }
+        button { background: #2563eb; color: white; border: none; border-radius: 7px; padding: 0.7rem 1rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Reporte de ventas{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <div class="section-badge">Dashboard</div>
+        <h2 class="mb-1">Reporte de ventas</h2>
+    </div>
+
+    <section class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+            <h3 class="mb-3">Total general</h3>
+            <p class="fs-5 mb-0">{{ total|default:0|floatformat:2 }}</p>
+        </div>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <section class="card shadow-sm border-0 h-100">
+                <div class="card-body p-4">
+                    <h3 class="mb-3">Clientes con ventas</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Ventas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cliente in clientes_con_ventas %}
+                                    <tr>
+                                        <td>{{ cliente }}</td>
+                                        <td>{{ cliente.num_ventas }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="2">No hay ventas registradas.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-6">
+            <section class="card shadow-sm border-0 h-100">
+                <div class="card-body p-4">
+                    <h3 class="mb-3">Ventas por estado</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Estado</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in ventas_por_estado %}
+                                    <tr>
+                                        <td>{{ item.estado }}</td>
+                                        <td>{{ item.total }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="2">No hay datos por estado.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}
