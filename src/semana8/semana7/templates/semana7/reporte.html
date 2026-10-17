@@ -1,0 +1,64 @@
+{% extends 'semana7/base.html' %}
+
+{% block content %}
+<h2>Reporte ORM de la Semana 7</h2>
+<p><strong>Total general:</strong> {{ total|floatformat:2 }}</p>
+
+<h3>Clientes con ventas</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Cliente</th>
+            <th>Número de ventas</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cliente in clientes_con_ventas %}
+        <tr>
+            <td>{{ cliente.nombres }} {{ cliente.apellidos }}</td>
+            <td>{{ cliente.num_ventas }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2">No hay clientes con ventas.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Ventas por estado</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Estado</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for fila in ventas_por_estado %}
+        <tr>
+            <td>{{ fila.estado }}</td>
+            <td>{{ fila.total }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2">Sin ventas registradas.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Clientes con ventas pendientes</h3>
+<ul>
+    {% for cliente in clientes_pendientes %}
+        <li>{{ cliente.nombres }} {{ cliente.apellidos }}</li>
+    {% empty %}
+        <li>No hay clientes con ventas pendientes.</li>
+    {% endfor %}
+</ul>
+
+<h3>Clientes del mes actual</h3>
+<ul>
+    {% for cliente in clientes_mes %}
+        <li>{{ cliente.nombres }} {{ cliente.apellidos }}</li>
+    {% empty %}
+        <li>No hay clientes con ventas en el mes actual.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

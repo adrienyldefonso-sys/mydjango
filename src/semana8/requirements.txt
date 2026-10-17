@@ -1,0 +1,7 @@
+# Dependencias exactas del proyecto Django y de la investigación de Semana 5
+asgiref==3.12.1
+Django==5.2.17
+# Framework de la API REST usado en Semana 8.
+djangorestframework==3.18.3
+sqlparse==0.6.0
+tzdata==2026.3

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar venta{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <div class="section-badge">Operación segura</div>
+        <h2 class="mb-1">Registrar venta con validación de stock</h2>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} mb-3">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <section class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="cliente_id" class="form-label">Cliente</label>
+                        <select id="cliente_id" name="cliente_id" class="form-select" required>
+                            <option value="">Seleccione un cliente</option>
+                            {% for cliente in clientes %}
+                                <option value="{{ cliente.id }}">{{ cliente }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="producto_id" class="form-label">Producto</label>
+                        <select id="producto_id" name="producto_id" class="form-select" required>
+                            <option value="">Seleccione un producto</option>
+                            {% for producto in productos %}
+                                <option value="{{ producto.id }}">{{ producto.nombre }} (Stock: {{ producto.stock }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="cantidad" class="form-label">Cantidad</label>
+                        <input id="cantidad" name="cantidad" type="number" min="1" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-2">
+                    <a href="{% url 'semana5:listado_productos' %}" class="btn btn-secondary">Volver</a>
+                    <button type="submit" class="btn btn-primary">Registrar venta</button>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %}
