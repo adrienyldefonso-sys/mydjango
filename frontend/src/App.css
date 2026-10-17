@@ -1,0 +1,75 @@
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  font-family: Arial, sans-serif;
+  color: #243047;
+}
+
+.page-title {
+  color: #174a72;
+  border-bottom: 3px solid #82c7c2;
+  padding-bottom: 12px;
+}
+
+.section-title {
+  margin-top: 28px;
+  color: #236b69;
+}
+
+.product-list,
+.sale-list {
+  padding-left: 22px;
+}
+
+.product-item,
+.sale-item {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+.low-stock {
+  color: #a64b00;
+}
+
+.empty-message {
+  padding: 14px;
+  background: #fff4db;
+  border-radius: 8px;
+}
+
+.customer-card {
+  margin: 16px 0;
+  padding: 16px 20px;
+  border: 1px solid #cbd9e3;
+  border-radius: 10px;
+  background: #f7fbfd;
+}
+
+.customer-name {
+  margin: 0;
+  color: #174a72;
+}
+
+.customer-total {
+  font-weight: 700;
+}
+
+.research-note {
+  font-weight: 600;
+}
+
+.research-list {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.research-item {
+  padding: 14px 16px;
+  border: 1px solid #cbd9e3;
+  border-radius: 8px;
+  background: #fff;
+  line-height: 1.6;
+}
