@@ -216,7 +216,137 @@ python manage.py createsuperuser
 
 El superusuario creado durante el desarrollo puede acceder a `/admin/` con sus credenciales.
 
-## 8. Verificaciones realizadas
+## 8. SEMANA 3 — Óptica y historial clínico
+
+## 9. SEMANA 4 — Extensión con Ficha médica y ventas
+
+La documentación completa del modelo ampliado, sus relaciones, consultas ORM,
+CRUD del modelo intermedio y comandos de migración está disponible en
+[src/semana4/README.md](src/semana4/README.md).
+
+Repositorio para la entrega:
+
+<https://github.com/adrienyldefonso-sys/mydjango.git>
+
+### Auditoría del modelo de datos
+
+| Criterio | Estado | Evidencia |
+|---|---|---|
+| 5 entidades de la semana 3 | ✅ | `Optometrista`, `Producto`, `Sucursal`, `Cliente`, `HistorialClinico` replcadas dentro de `semana4` |
+| FK original con `related_name` y `on_delete` | ✅ | `HistorialClinico.cliente` usa `related_name='historiales'` y `CASCADE` |
+| OneToOneField | ✅ | `FichaMedica.cliente` con `OneToOneField` y `related_name='ficha_medica'` |
+| M2M con `through` | ✅ | `Cliente.productos` usa `through='Venta'` y `Venta` tiene `cantidad`, `precio_unitario`, `fecha_venta`, `estado` |
+| Justificación por relación | ✅ | Un cliente puede tener un historial clínico, una ficha médica, y múltiples ventas por producto |
+| Mínimo 7 entidades | ✅ | 5 originales + `FichaMedica` + `Venta` = 7 |
+| Migraciones propias | ✅ | `semana4` crea sus tablas sin depender de `semana3` |
+
+### Relación N:M con modelo intermedio
+
+La relación entre `Cliente` y `Producto` está modelada con `Venta` como tabla intermedia. El flujo real es:
+
+`Request → URL → View → Model/ORM → SQLite → View → Context → Template → Response`
+
+En la vista se usa `Cliente.objects.prefetch_related('ventas__producto')` para obtener los clientes y, de forma optimizada, sus ventas y productos asociados, reduciendo el número de consultas. El ORM conceptual se traduce así:
+
+- `.all()` → `SELECT *`
+- `.filter()` → `SELECT ... WHERE ...`
+- `select_related()` → `SELECT ... JOIN ...`
+- `prefetch_related()` → múltiples `SELECT` optimizados con `IN (...)`
+
+Este patrón evita la carga N+1 que se produciría si se consultara cada venta o producto de forma individual por cada cliente.
+
+## 10. SEMANA 5 — Personalización del Django Admin
+
+La investigación propia de la óptica registra las siete entidades en
+`src/semana5/admin.py` mediante clases `ModelAdmin` personalizadas:
+
+| Modelo | `list_display` | `search_fields` | `list_filter` | Relaciones expuestas |
+|---|---|---|---|---|
+| `Optometrista` | apellidos, nombres, número de colegiatura y teléfono | nombres, apellidos y número de colegiatura | — | — |
+| `Producto` | nombre, tipo, marca, precio y stock | nombre y marca | tipo | — |
+| `Sucursal` | nombre, dirección y teléfono | nombre y dirección | — | — |
+| `Cliente` | apellidos, nombres, DNI, teléfono y fecha de nacimiento | nombres, apellidos y DNI | — | `FichaMedicaInline` y `VentaInline` |
+| `HistorialClinico` | cliente, fecha de examen y diagnóstico | diagnóstico y datos del cliente | fecha de examen | — |
+| `FichaMedica` | cliente, tipo de seguro y contacto de emergencia | datos del cliente y tipo de seguro | — | — |
+| `Venta` | cliente, producto, fecha, cantidad, precio unitario y estado | datos del cliente y nombre del producto | estado y fecha de venta | — |
+
+`FichaMedicaInline` usa `admin.StackedInline` para editar la relación
+`OneToOneField` entre `Cliente` y `FichaMedica` en la misma pantalla del cliente.
+`VentaInline` usa `admin.TabularInline` para editar el modelo intermedio de la
+relación `ManyToManyField` entre `Cliente` y `Producto`, mostrando como columnas
+editables `producto`, `fecha_venta`, `cantidad`, `precio_unitario` y `estado`.
+
+El Admin resuelve el CRUD, las validaciones, las búsquedas, los filtros y la
+edición de relaciones desde una sola pantalla. Para una interfaz dirigida al
+cliente final todavía serían necesarias Views y Templates propios, con reglas
+de negocio específicas, diseño visual de la óptica, permisos diferenciados por
+rol y reportes personalizados.
+
+El archivo `requirements.txt` contiene las dependencias exactas de esta entrega:
+Django 5.2.17, `asgiref`, `sqlparse` y `tzdata`.
+
+
+### Problemática
+
+La óptica llevaba el registro de clientes y exámenes visuales en papel. Las fichas se perdían, se dañaban o se distribuían entre varias sucursales, lo que hacía difícil consultar el historial de un paciente, mantener el control del stock de productos y coordinar la atención de optometristas. La app `semana3` digitaliza ese flujo y centraliza la información en una base de datos relacional.
+
+### Requisitos funcionales
+
+1. Registrar clientes con datos personales y contacto.
+2. Registrar optometristas con su número de colegiatura.
+3. Registrar sucursales con dirección y teléfono.
+4. Gestionar productos del catálogo con tipo, marca, precio y stock.
+5. Crear un historial clínico asociado a un cliente.
+6. Guardar datos refractivos como esfera, cilindro y eje por ojo.
+7. Consultar todos los clientes con búsqueda por apellido o DNI.
+8. Consultar todos los historiales clínicos de un cliente en orden cronológico.
+9. Actualizar información sin perder trazabilidad de los registros.
+10. Eliminar registros de forma segura con confirmación.
+11. Mantener una estructura de datos relacional usando Django ORM.
+12. Tener acceso a las entidades desde el panel de administración y a los formularios CRUD de la app.
+
+### Entidades de la aplicación
+
+La app `semana3` incluye estas cinco entidades principales:
+
+- `Optometrista`: profesionales que atienden diagnósticos visuales.
+- `Producto`: catálogo con armazones, lunas y lentes de contacto.
+- `Sucursal`: sedes de la óptica.
+- `Cliente`: pacientes registrados.
+- `HistorialClinico`: información médica y refractiva asociada a cada cliente.
+
+La relación principal es:
+
+- `Cliente` tiene varios `HistorialClinico` mediante `ForeignKey` con `related_name='historiales'`.
+
+### CRUD implementado
+
+La app incluye formularios y vistas para:
+
+- Crear registros.
+- Listar registros con filtros básicos.
+- Editar registros existentes.
+- Eliminar con confirmación.
+
+### URLs principales
+
+```text
+/optica/clientes/
+/optica/clientes/nuevo/
+/optica/clientes/<id>/editar/
+/optica/clientes/<id>/eliminar/
+
+/optica/historiales/<cliente_id>/
+/optica/historiales/<cliente_id>/nuevo/
+/optica/historiales/<id>/editar/
+/optica/historiales/<id>/eliminar/
+
+/optica/optometristas/
+/optica/productos/
+/optica/sucursales/
+```
+
+## 9. Verificaciones realizadas
 
 - `python manage.py check`: sin errores.
 - `python manage.py makemigrations`: genero `core/migrations/0001_initial.py`.

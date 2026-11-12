@@ -12,6 +12,21 @@
                 {% endif %}
             </div>
 
+            <div class="alert alert-light border mb-4">
+                <h5 class="mb-2">Documentación de la Semana 4</h5>
+                <p class="mb-2">
+                    Este formulario pertenece al módulo de óptica de la Semana 4 y hereda la estructura visual
+                    de <strong>base.html</strong>. La idea principal es mantener un diseño común para todos los
+                    listados y formularios del proyecto.
+                </p>
+                <ul class="mb-0 small">
+                    <li><strong>Cliente:</strong> entidad principal del sistema, con su ficha médica y relación con ventas.</li>
+                    <li><strong>Producto:</strong> catálogo de lentes, monturas u otros artículos.</li>
+                    <li><strong>Venta:</strong> modelo intermedio de la relación muchos a muchos, con datos como cantidad, precio y estado.</li>
+                    <li><strong>Relaciones:</strong> se usan OneToOne, ForeignKey y ManyToMany con modelo intermedio para representar la lógica real de la óptica.</li>
+                </ul>
+            </div>
+
             <form method="post">
                 {% csrf_token %}
                 <div class="row g-3">

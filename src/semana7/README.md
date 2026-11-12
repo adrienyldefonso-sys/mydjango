@@ -43,13 +43,43 @@ No se añadieron paquetes nuevos, por lo que `requirements.txt` conserva sus dep
 
 ## Ejercicio 13 — Optimización del reporte
 
-La pantalla `/semana7/reporte/` era la que más consultas ejecutaba entre las dos pantallas de Semana 7: **5 consultas** por petición, frente a **3** en `/semana7/ventas/registrar/`. La medición se hizo con el cliente de pruebas de Django sobre la base SQLite local.
+### Pantalla y medición inicial
 
-El reporte consultaba por separado los clientes con ventas pendientes y los clientes con ventas del mes. Ahora precarga con `prefetch_related()` únicamente las ventas que cumplen alguno de esos criterios y deriva ambas listas de la precarga. El total pasó de **5 a 4 consultas** por petición. Se conservó la presentación del reporte y se añadió una prueba que verifica el nuevo conteo.
+Se compararon las dos pantallas de Semana 7 haciendo una petición GET a cada una. El reporte `/semana7/reporte/` ejecutaba **5 consultas** y el formulario `/semana7/ventas/registrar/` ejecutaba **3**. Por eso se optimizó el reporte. El conteo corresponde a las consultas SQL ejecutadas al renderizar cada pantalla.
 
-### Prueba automática
+Antes del cambio, las cinco consultas del reporte eran:
 
-`python manage.py test semana7` comprueba el reporte, las listas derivadas y el límite de 4 consultas.
+1. Calcular el total vendido.
+2. Contar las ventas de cada cliente.
+3. Agrupar las ventas por estado.
+4. Buscar los clientes que tenían ventas pendientes.
+5. Buscar los clientes que tenían ventas en el mes actual.
+
+Las consultas 4 y 5 buscaban clientes por separado usando la relación con sus ventas.
+
+### Cambios realizados
+
+- En `semana7/views.py`, se usa `prefetch_related()` para cargar junto con los clientes las ventas que sirven para identificar ventas pendientes o ventas del mes actual.
+- Las listas de clientes pendientes y clientes del mes se construyen en Python a partir de esas ventas precargadas, en lugar de ejecutar dos búsquedas separadas.
+- El reporte sigue mostrando el total vendido, las ventas por cliente, las ventas por estado y las dos listas de clientes. No fue necesario cambiar el template, los modelos ni crear migraciones.
+- Después del cambio, se ejecutan **4 consultas**: una para el total, una para los clientes y sus conteos, una para precargar las ventas relevantes y una para agrupar por estado. El reporte ahorra **1 consulta por petición**.
+- En `semana7/tests.py`, la prueba del reporte usa `assertNumQueries(4)`. También revisa que el total, los clientes y los estados se sigan mostrando correctamente. Como las listas se construyen en memoria, la prueba comprueba directamente sus clientes, en lugar de tratarlas como QuerySets.
+
+### Cómo comprobarlo
+
+Desde la carpeta `src/semana7`, ejecuta la prueba del reporte:
+
+```powershell
+python manage.py test semana7.tests.ReporteVentasTests.test_aggregate_and_annotate_reports_are_rendered
+```
+
+La prueba termina con `OK` si el reporte ejecuta exactamente 4 consultas; Django no imprime el número cuando la comprobación pasa. Para ver el conteo, ejecuta:
+
+```powershell
+python manage.py shell -c "from django.test import Client; from django.db import connection, reset_queries; from django.conf import settings; settings.ALLOWED_HOSTS=['testserver']; client=Client(); reset_queries(); response=client.get('/semana7/reporte/'); print('Status:', response.status_code); print('Consultas:', len(connection.queries))"
+```
+
+La medición devuelve `Status: 200` y `Consultas: 4`. La prueba automática utiliza su propia base de datos temporal; el comando de shell cuenta las consultas de la base local.
 
 # Proyecto Django: Sistema de Gestión de Objetos Encontrados
 
