@@ -235,8 +235,9 @@ Ambos comandos finalizaron correctamente: Oxlint terminó sin reportar errores
   el panel; en particular, no aparecieron advertencias de `key` en el listado.
 - `npm run lint`: finalizó con código 0 y sin errores de Oxlint.
 - `npm run build`: Vite compiló 26 módulos y terminó correctamente.
-- `frontend/.gitignore` excluye `node_modules/` y `dist/`; `git ls-files` no
-  encontró ninguno de esos directorios entre los archivos rastreados.
+- `frontend/.gitignore` excluye `node_modules/` y `dist/`. Se retiraron los
+  archivos compilados `dist/` del seguimiento de Git sin borrarlos del disco;
+  `git ls-files` confirma que ninguno de esos directorios está rastreado.
 
 En el navegador, el título inicial es `Carrito (0) — Diagnósticos`; después
 de agregar «Saludable» cambia a `Carrito (1) — Diagnósticos`, y el aviso
