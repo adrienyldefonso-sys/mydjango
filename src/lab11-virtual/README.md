@@ -171,6 +171,32 @@ El total no necesita `useState`: se deriva de `lineas` y se vuelve a calcular
 cuando React renderiza el componente con las líneas actualizadas. Guardarlo
 también como estado duplicaría información y podría desincronizarse.
 
+## Parte 2 — Ejercicio 9: recurso del panel y operaciones
+
+El panel Ojo d’Chakra administra **diagnósticos** asociados a una **parcela**.
+La fila principal que se lista, crea, edita y elimina es un diagnóstico; la
+parcela es el registro padre que identifica a qué historial pertenece.
+
+| Entidad del panel | URL de la API | Campos principales | Validación para probar HTTP 400 | Filtros | Operaciones necesarias |
+|---|---|---|---|---|---|
+| Diagnóstico (pertenece a una parcela) | `http://127.0.0.1:8001/api/diagnosticos/` | `id` (UUID), `parcela` (UUID), `fecha_captura`, `plaga_detectada`, `plaga_nombre`, `confianza`, `imagen_url` | `validate_confianza`: de 0 a 100 y hasta 2 decimales. Prueba `confianza: 100.01` para recibir 400. | `?search=` busca en nombre y código; `?ordering=` ordena por fecha, nombre, código o confianza; `?parcela=<UUID>` filtra por parcela; `?desde=YYYY-MM-DD&hasta=YYYY-MM-DD` limita las fechas. | Listar: GET colección; crear: POST colección; consultar/editar: GET, PUT o PATCH en `/api/diagnosticos/<uuid>/`; eliminar: DELETE en esa URL. |
+
+La API de parcelas también conserva `GET /api/parcelas/` y
+`GET /api/parcelas/<uuid>/historial/`. El historial anidado acepta `desde` y
+`hasta`; el endpoint de diagnósticos acepta esos mismos filtros además de
+búsqueda, ordenamiento y parcela. Los filtros y el CRUD se implementan en
+`src/semana11/backend/historial/views.py`, y la regla de confianza en
+`src/semana11/backend/historial/serializers.py`.
+
+El campo `activo` que se agrega al mock para practicar el botón Activar/
+Desactivar no pertenece al modelo de la API; tampoco se persisten el resumen
+ni el carrito. Al integrar el panel, las operaciones deben enviar campos reales
+del diagnóstico y el estado `activo` solo se debe enviar si se agrega al modelo
+y al serializer.
+
+Esta carpeta conserva el frontend de práctica con datos mock. Los ejercicios
+Ajax del panel se trabajan en `src/semana12/frontend`.
+
 ## Búsqueda compartida
 
 `Buscador` y `DiagnosticoLista` no se comunican directamente: ambos reciben

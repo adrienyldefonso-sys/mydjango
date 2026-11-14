@@ -22,6 +22,15 @@ class ParcelaSerializer(serializers.ModelSerializer):
 
 
 class DiagnosticoSerializer(serializers.ModelSerializer):
+    confianza = serializers.DecimalField(max_digits=5, decimal_places=2)
+
+    def validate_confianza(self, value):
+        if value < 0 or value > 100:
+            raise serializers.ValidationError(
+                'La confianza debe estar entre 0 y 100.',
+            )
+        return value
+
     class Meta:
         model = Diagnostico
         fields = (

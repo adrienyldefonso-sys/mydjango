@@ -1,10 +1,76 @@
+from uuid import UUID
+
 from django.utils.dateparse import parse_date
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
 from .models import Diagnostico, Parcela
-from .serializers import ParcelaHistorialSerializer, ParcelaSerializer
+from .serializers import (
+    DiagnosticoSerializer,
+    ParcelaHistorialSerializer,
+    ParcelaSerializer,
+)
+
+
+class DiagnosticoViewSet(ModelViewSet):
+    queryset = Diagnostico.objects.select_related('parcela').all()
+    serializer_class = DiagnosticoSerializer
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ('plaga_nombre', 'plaga_detectada')
+    ordering_fields = (
+        'fecha_captura',
+        'plaga_nombre',
+        'plaga_detectada',
+        'confianza',
+    )
+    ordering = ('-fecha_captura',)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        parcela_id = self.request.query_params.get('parcela')
+
+        if parcela_id:
+            try:
+                parcela_id = UUID(parcela_id)
+            except ValueError as error:
+                raise ValidationError({
+                    'parcela': 'Usa un UUID válido para identificar la parcela.',
+                }) from error
+            queryset = queryset.filter(parcela_id=parcela_id)
+
+        plaga_detectada = self.request.query_params.get('plaga_detectada')
+        if plaga_detectada:
+            queryset = queryset.filter(plaga_detectada=plaga_detectada)
+
+        filtros_fecha = {}
+        for parametro, campo in (
+            ('desde', 'fecha_captura__date__gte'),
+            ('hasta', 'fecha_captura__date__lte'),
+        ):
+            valor = self.request.query_params.get(parametro)
+            if valor:
+                fecha = parse_date(valor)
+                if fecha is None:
+                    raise ValidationError({
+                        parametro: 'Usa el formato de fecha YYYY-MM-DD.',
+                    })
+                filtros_fecha[parametro] = fecha
+                queryset = queryset.filter(**{campo: fecha})
+
+        if (
+            filtros_fecha.get('desde')
+            and filtros_fecha.get('hasta')
+            and filtros_fecha['desde'] > filtros_fecha['hasta']
+        ):
+            raise ValidationError({
+                'desde': 'La fecha inicial no puede ser posterior a la fecha final.',
+            })
+
+        return queryset
 
 
 class ParcelaListView(APIView):

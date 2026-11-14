@@ -1,0 +1,387 @@
+.integrador.pagina {
+  width: min(1120px, calc(100% - 40px));
+  max-width: 1120px;
+  margin: 2rem auto 4rem;
+  padding: 2rem 0;
+  background: transparent;
+  box-shadow: none;
+  color: #23332a;
+}
+
+.integrador .hero {
+  margin-bottom: 2rem;
+}
+
+.integrador .marca,
+.integrador .estado-pill.saludable,
+.integrador .estado-registro.activo {
+  color: #367144;
+}
+
+.integrador .marca {
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.integrador .eyebrow {
+  margin: 1.5rem 0 0.5rem;
+  color: #64816a;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.integrador .hero h1 {
+  margin-bottom: 0.5rem;
+  color: #1d3827;
+  font-size: clamp(2rem, 5vw, 2.9rem);
+}
+
+.integrador .hero > p:last-child,
+.integrador .diagnostico-info time,
+.integrador .diagnostico-info p,
+.integrador .diagnostico-info small {
+  color: #64746a;
+}
+
+.integrador .buscador-diagnosticos {
+  display: grid;
+  max-width: 380px;
+  gap: 0.4rem;
+  color: #34493a;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.integrador .filtros-diagnosticos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.integrador .buscador-diagnosticos input,
+.integrador .buscador-diagnosticos select,
+.integrador .diagnostico-form-grid input,
+.integrador .diagnostico-form-grid select {
+  min-width: 0;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #d5e0d3;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #23332a;
+  font: inherit;
+}
+
+.integrador .aviso {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #cfe2ce;
+  border-radius: 0.6rem;
+  background: #eaf5e9;
+  color: #2f643e;
+  font-weight: 700;
+}
+
+.integrador .historial-lista {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.integrador .parcela-card,
+.integrador .carrito {
+  overflow: hidden;
+  border: 1px solid #dfe7dd;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 0.8rem 2.5rem rgb(34 57 39 / 7%);
+}
+
+.integrador .parcela-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.75rem 1.25rem;
+  border-bottom: 1px solid #edf1eb;
+}
+
+.integrador .parcela-header .eyebrow {
+  margin: 0 0 0.5rem;
+}
+
+.integrador .parcela-header h2 {
+  margin: 0 0 0.25rem;
+  color: #203d2a;
+}
+
+.integrador .parcela-header p:last-child {
+  margin: 0;
+  color: #728078;
+}
+
+.integrador .total-badge,
+.integrador .estado-registro,
+.integrador .estado-pill {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: #eaf3e8;
+  color: #3c7347;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.integrador .parcela-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.5rem;
+  padding: 1rem 1.75rem;
+  border-bottom: 1px solid #edf1eb;
+  color: #607066;
+  font-size: 0.85rem;
+}
+
+.integrador .diagnosticos-seccion,
+.integrador .resumen-plagas {
+  padding: 1.4rem 1.75rem;
+}
+
+.integrador .diagnostico-form {
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  border: 1px solid #e1e9df;
+  border-radius: 0.75rem;
+  background: #f9fbf8;
+}
+
+.integrador .diagnostico-form h3,
+.integrador .resumen-plagas h3,
+.integrador .diagnosticos-seccion h3 {
+  margin: 0 0 0.9rem;
+  color: #34493a;
+}
+
+.integrador .diagnostico-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.integrador .diagnostico-form-grid label {
+  display: grid;
+  gap: 0.35rem;
+  color: #485e4d;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.integrador .form-actions,
+.integrador .producto-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.integrador .boton-agregar,
+.integrador .boton-imagen,
+.integrador .boton-eliminar,
+.integrador .boton-vaciar,
+.integrador .boton-quitar {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #c9dbc8;
+  border-radius: 0.45rem;
+  background: #f0f6ee;
+  color: #356a40;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.integrador .boton-agregar {
+  border-color: #3d7548;
+  background: #3d7548;
+  color: #fff;
+}
+
+.integrador .boton-eliminar {
+  border-color: #e6c6c3;
+  background: #fff3f1;
+  color: #9b342e;
+}
+
+.integrador button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.integrador .form-feedback {
+  margin: 0.75rem 0 0;
+  font-size: 0.85rem;
+}
+
+.integrador .form-feedback.error {
+  color: #a12622;
+}
+
+.integrador .form-feedback.success {
+  color: #367144;
+}
+
+.integrador .form-feedback pre {
+  overflow: auto;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: #f3f4f6;
+}
+
+.integrador .resumen-plagas {
+  border-bottom: 1px solid #edf1eb;
+  background: #fbfcfa;
+}
+
+.integrador .resumen-y-lista,
+.integrador .diagnostico-lista {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.integrador .resumen-total {
+  color: #526457;
+  font-size: 0.85rem;
+}
+
+.integrador .resumen-plagas ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.integrador .resumen-plagas li {
+  display: flex;
+  min-width: 11rem;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #e6ece3;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #607066;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.integrador .diagnostico-lista {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+}
+
+.integrador .diagnostico-card {
+  display: flex;
+  min-width: 0;
+  gap: 0.85rem;
+  padding: 0.75rem;
+  border: 1px solid #e7ece5;
+  border-radius: 0.75rem;
+  background: #fff;
+}
+
+.integrador .diagnostico-imagen {
+  width: 5.75rem;
+  height: 5.75rem;
+  flex: 0 0 auto;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.integrador .diagnostico-info {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.integrador .estado-pill.alerta {
+  background: #fff0df;
+  color: #9c5d20;
+}
+
+.integrador .estado-registro.inactivo {
+  background: #f0eeee;
+  color: #6d6262;
+}
+
+.integrador .diagnostico-info p,
+.integrador .diagnostico-info small {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.integrador .estado-vacio {
+  padding: 1.25rem;
+  border-radius: 0.6rem;
+  background: #f6f8f5;
+  color: #6d7b71;
+  text-align: center;
+}
+
+.integrador .carrito {
+  margin-top: 1.25rem;
+  padding: 1.4rem 1.75rem;
+}
+
+.integrador .carrito h2 {
+  color: #203d2a;
+}
+
+.integrador .carrito-totales,
+.integrador .carrito-lista li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+}
+
+.integrador .carrito-lista {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.integrador .carrito-lista li {
+  align-items: center;
+  padding: 0.7rem;
+  border: 1px solid #e6ece3;
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .integrador.pagina {
+    width: calc(100% - 1.5rem);
+    padding-top: 1.5rem;
+  }
+
+  .integrador .parcela-header {
+    flex-direction: column;
+    padding: 1.25rem 1rem 1rem;
+  }
+
+  .integrador .parcela-meta,
+  .integrador .diagnosticos-seccion,
+  .integrador .resumen-plagas,
+  .integrador .carrito {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}

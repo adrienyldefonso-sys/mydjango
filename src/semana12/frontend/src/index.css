@@ -1,0 +1,123 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color: #1f2937;
+  background: #f3f4f6;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+}
+
+.secciones-laboratorio {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 1.5rem auto 0;
+  padding: 0 1rem;
+}
+
+.secciones-laboratorio button {
+  padding: 0.65rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.secciones-laboratorio button[aria-pressed='true'] {
+  border-color: #3d7548;
+  background: #eaf3e8;
+}
+
+main {
+  max-width: 720px;
+  margin: 4rem auto;
+  padding: 2rem;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(15 23 42 / 8%);
+}
+
+code {
+  overflow-wrap: anywhere;
+}
+
+.productos-lista {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+
+.producto {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.producto span {
+  color: #4b5563;
+}
+
+.producto-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.producto-acciones button {
+  padding: 0.4rem 0.65rem;
+  font: inherit;
+}
+
+.producto-formulario {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.busqueda-productos {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 1rem;
+}
+
+.busqueda-productos input {
+  padding: 0.5rem;
+  font: inherit;
+}
+
+.producto-formulario h3,
+.producto-formulario p {
+  margin: 0;
+}
+
+.producto-formulario label {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.producto-formulario input,
+.producto-formulario select,
+.producto-formulario button {
+  padding: 0.5rem;
+  font: inherit;
+}
+
+.producto-formulario pre {
+  overflow: auto;
+  margin: 0;
+  padding: 0.75rem;
+  background: #f3f4f6;
+}

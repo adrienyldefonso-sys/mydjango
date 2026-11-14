@@ -1,0 +1,74 @@
+[
+  {
+    "model": "historial.parcela",
+    "pk": "0f56200f4b594830b94a685c14b0143c",
+    "fields": {
+      "nombre": "Chacra Los Andes",
+      "cultivo": "Papa",
+      "referencia": "Huarochirí",
+      "latitud": "-12.130000",
+      "longitud": "-76.230000",
+      "agricultor": "Luis Quispe"
+    }
+  },
+  {
+    "model": "historial.diagnostico",
+    "pk": "d3257ceb3cf5448eaee151c8654b8879",
+    "fields": {
+      "parcela": "0f56200f4b594830b94a685c14b0143c",
+      "fecha_captura": "2026-10-30T16:36:38.021716-05:00",
+      "plaga_detectada": "Potato___healthy",
+      "plaga_nombre": "Saludable",
+      "confianza": "98.50",
+      "imagen_url": "https://via.placeholder.com/150"
+    }
+  },
+  {
+    "model": "historial.diagnostico",
+    "pk": "a1127ceb3cf5448eaee151c8654b8812",
+    "fields": {
+      "parcela": "0f56200f4b594830b94a685c14b0143c",
+      "fecha_captura": "2026-10-28T10:15:00-05:00",
+      "plaga_detectada": "Potato___Late_blight",
+      "plaga_nombre": "Tizón Tardío",
+      "confianza": "92.10",
+      "imagen_url": "https://via.placeholder.com/150"
+    }
+  },
+  {
+    "model": "historial.diagnostico",
+    "pk": "b2237ceb3cf5448eaee151c8654b8834",
+    "fields": {
+      "parcela": "0f56200f4b594830b94a685c14b0143c",
+      "fecha_captura": "2026-10-25T14:22:10-05:00",
+      "plaga_detectada": "Potato___Early_blight",
+      "plaga_nombre": "Tizón Temprano",
+      "confianza": "85.40",
+      "imagen_url": "https://via.placeholder.com/150"
+    }
+  },
+  {
+    "model": "historial.diagnostico",
+    "pk": "c3348dcb9ad64834a976e3d02d88d120",
+    "fields": {
+      "parcela": "0f56200f4b594830b94a685c14b0143c",
+      "fecha_captura": "2026-10-23T12:08:00-05:00",
+      "plaga_detectada": "Potato___Late_blight",
+      "plaga_nombre": "Tizón Tardío",
+      "confianza": "88.30",
+      "imagen_url": "https://via.placeholder.com/150"
+    }
+  },
+  {
+    "model": "historial.diagnostico",
+    "pk": "e5569eec1b9c4aa7a380e4d7719bc541",
+    "fields": {
+      "parcela": "0f56200f4b594830b94a685c14b0143c",
+      "fecha_captura": "2026-10-20T09:45:00-05:00",
+      "plaga_detectada": "Potato___healthy",
+      "plaga_nombre": "Saludable",
+      "confianza": "96.20",
+      "imagen_url": "https://via.placeholder.com/150"
+    }
+  }
+]

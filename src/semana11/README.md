@@ -45,14 +45,15 @@ Este ejercicio agrega el registro solo al estado React de prueba; no hace una pe
 
 ## Serializer y reglas de validación
 
-`backend/historial/serializers.py` expone las parcelas, diagnósticos y el historial anidado con la forma del mock. DRF reutiliza las validaciones del modelo:
+`backend/historial/serializers.py` expone las parcelas, diagnósticos y el historial anidado con la forma del mock. La validación `validate_confianza` exige valores entre 0 y 100 con hasta dos decimales; el modelo también valida los rangos geográficos de la parcela.
 
-- confianza entre 0 y 100;
 - latitud entre -90 y 90 y longitud entre -180 y 180;
 - campos textuales obligatorios no vacíos;
 - fecha válida y, si se envía, URL de imagen válida.
 
-La API de práctica incluye `GET /api/parcelas/` y `GET /api/parcelas/<uuid>/historial/`, con filtros `desde` y `hasta`. Rechaza fechas mal formadas y un rango donde `desde` sea posterior a `hasta`. El frontend aún usa datos mock; la conexión al backend se hará en un paso posterior.
+La API de práctica incluye `GET /api/parcelas/`, `GET /api/parcelas/<uuid>/historial/` y el CRUD de diagnósticos bajo `/api/diagnosticos/`. La colección permite GET, POST, PUT, PATCH y DELETE mediante `DiagnosticoViewSet`; admite `?search=` por nombre/código, `?ordering=` por fecha/nombre/código/confianza, `?parcela=<uuid>` y filtros de fecha `?desde=YYYY-MM-DD&hasta=YYYY-MM-DD`. El historial anidado también conserva los filtros de fecha. Las fechas mal formadas, los rangos invertidos, UUID de parcela inválidos y confianza fuera del rango responden con HTTP 400.
+
+El frontend de Semana 12 (`src/semana12/frontend`) consume el historial de la primera parcela mediante los endpoints anteriores y la instancia Axios `apiOjoChakra`. Para datos de demostración se incluye `historial/fixtures/demo_historial.json`. `django-cors-headers` permite los orígenes de desarrollo `localhost:5173` y `localhost:5174`; el acceso DRF sigue en `AllowAny` para el laboratorio, por lo que la API no debe exponerse sin autenticación y permisos en un entorno real. El frontend `src/lab11-virtual` conserva los datos mock de Semana 11.
 
 La tabla de planificación queda así:
 
