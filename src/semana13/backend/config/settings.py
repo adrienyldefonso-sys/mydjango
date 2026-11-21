@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'core.apps.CoreConfig',
+    'parcelas.apps.ParcelasConfig',
+    'diagnosticos.apps.DiagnosticosConfig',
     'historial.apps.HistorialConfig',
 ]
 

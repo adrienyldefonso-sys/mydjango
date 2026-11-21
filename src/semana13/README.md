@@ -229,6 +229,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'core.apps.CoreConfig',
+    'parcelas.apps.ParcelasConfig',
+    'diagnosticos.apps.DiagnosticosConfig',
     'historial.apps.HistorialConfig',
 ]
 ```
@@ -276,7 +279,10 @@ semana13/frontend/
     ├── components/
     │   └── DiagnosticoCard.jsx
     └── pages/
-        └── DiagnosticosPage.jsx
+        ├── DiagnosticosPage.jsx
+        ├── ParcelasPage.jsx
+        ├── HistorialParcelaPage.jsx
+        └── DiagnosticoFormPage.jsx
 ```
 
 - **`components/`:** componentes reutilizables de interfaz. `DiagnosticoCard.jsx` presenta los datos de un diagnóstico.
@@ -333,6 +339,197 @@ dist/assets/index-CJwNzk3j.js  317.68 kB │ gzip: 103.53 kB
 
 `node_modules/` y `dist/` están excluidos por `frontend/.gitignore`.
 
+## PARTE 2 — Diseño del proyecto integrador
+
+## Ejercicio 9 — Entidad y módulos de Ojo d’Chakra
+
+La entidad principal es **Diagnostico**, relacionada con **Parcela**: cada diagnóstico pertenece a una parcela y registra la plaga detectada, la fecha, la confianza y una URL de imagen opcional. Ambas entidades ya están definidas en `semana13/backend/historial/models.py`; no es necesario inventar otra entidad para continuar con los siguientes ejercicios.
+
+| Concepto | Equivalencia en Ojo d’Chakra | Estado y rutas |
+|---|---|---|
+| Tipo de comercio | Actualmente no es un comercio: no vende productos ni procesa pagos. Si se ofreciera mediante suscripción a cooperativas o empresas agrícolas, el modelo futuro más cercano sería B2B. | No hay transacciones comerciales implementadas. |
+| Entidad principal | `Diagnostico`, relacionado con `Parcela`. | Modelos implementados en `historial/models.py`; API en `/api/diagnosticos/` y `/api/parcelas/`. |
+| Módulos | Parcelas; diagnósticos e historial; búsqueda, filtros y resumen; panel administrativo. Usuarios, permisos y notificaciones serían módulos futuros. Pedidos, pagos e inventario comercial no aplican. | API de parcelas e historial y CRUD de diagnósticos implementados. React tiene `/diagnosticos`; una pantalla propia de parcelas aún no está creada. |
+| Roles de usuario | Agricultor: consulta sus parcelas e historial. Administrador: gestiona parcelas y diagnósticos. Visitante: solo accede a una página pública o inicio de sesión. | Son roles propuestos: todavía no hay modelo de usuario propio, inicio de sesión ni autorización por rol. |
+| Regla de negocio 1 | La confianza del diagnóstico debe estar entre 0 y 100, con dos decimales. | Implementada en el `DecimalField` y en la validación del serializer. |
+| Regla de negocio 2 | Cada diagnóstico debe pertenecer a una parcela existente; sus coordenadas deben respetar latitud −90 a 90 y longitud −180 a 180. | La relación y validadores de coordenadas están definidos en los modelos; el serializer valida la parcela referenciada. |
+| Rutas API y React | API: `GET /api/parcelas/`, `GET /api/parcelas/<uuid>/historial/` y CRUD en `/api/diagnosticos/`. React: `/diagnosticos` para la lista; `/parcelas` e `/parcelas/:id/historial` quedan propuestas. | La ruta `/diagnosticos` está implementada en Semana 13; las rutas de React de parcelas todavía no. |
+
+El backend de Semana 13 está en `src/semana13/backend` y el frontend independiente en `src/semana13/frontend`. La interfaz React actual solo lista diagnósticos; las operaciones CRUD descritas como parte del integrador corresponden al panel desarrollado en Semana 12 y todavía no todas tienen pantallas en el frontend nuevo de Semana 13.
+
+## Ejercicio 10 — Módulos, requisitos y reglas de negocio
+
+### Mapa de módulos
+
+| Módulo | Responsabilidad | Estado |
+|---|---|---|
+| Parcelas | Consultar nombre, cultivo, ubicación y agricultor. | Modelo y endpoint de lectura implementados; la pantalla de parcelas en React está pendiente. |
+| Diagnósticos e historial | Registrar y consultar plaga, fecha, confianza e imagen asociada a una parcela. | Modelo y API CRUD implementados; el panel completo está en Semana 12 y Semana 13 tiene una página inicial de listado. |
+| Búsqueda y filtros | Buscar por nombre o código de plaga, parcela, código exacto y rango de fechas. | Filtros en la API y en el panel de Semana 12; faltan en la página inicial de Semana 13. |
+| Resumen | Calcular cantidad de diagnósticos, fecha más reciente y cantidad por plaga. | Historial serializado por la API; el panel de Semana 12 también presenta resumen. |
+| Usuarios, roles y permisos | Autenticar y restringir parcelas y operaciones según el rol. | Pendiente; los roles están diseñados, pero no existen cuentas ni permisos específicos. |
+| Notificaciones | Informar sobre nuevos diagnósticos o cambios. | Pendiente; los avisos actuales son temporales y solo de interfaz. |
+
+### Tabla de roles
+
+| Rol | Acciones previstas | Pantalla |
+|---|---|---|
+| Visitante | Ver una presentación pública e iniciar sesión; sin acceso a historiales privados. | Página pública o inicio de sesión, aún pendiente. |
+| Agricultor | Consultar las parcelas asignadas y revisar sus diagnósticos. | Panel de parcelas e historial; la vista actual existe, pero aún no limita los datos por usuario. |
+| Administrador | Crear y mantener parcelas y diagnósticos, y gestionar usuarios y permisos. | Panel administrativo propio; la gestión de diagnósticos existe en Semana 12, la de usuarios y parcelas está pendiente. |
+
+Estos roles son parte del diseño objetivo. En el modelo actual, `agricultor` es texto en `Parcela`, no una cuenta; la API todavía no aplica autorización por rol.
+
+### Requisitos funcionales
+
+| ID | Requisito | Prioridad | Criterio de aceptación verificable |
+|---|---|---|---|
+| RF-01 | El sistema debe listar las parcelas registradas con nombre, cultivo, agricultor y ubicación. | Alta | `GET /api/parcelas/` responde HTTP 200 y cada objeto contiene esos campos. |
+| RF-02 | El usuario debe poder consultar los diagnósticos de una parcela. | Alta | `GET /api/diagnosticos/?parcela=<uuid>` responde solo con diagnósticos asociados al UUID solicitado. |
+| RF-03 | El usuario debe poder buscar diagnósticos por nombre o código y filtrarlos por código de plaga. | Alta | Una búsqueda devuelve solo coincidencias; al agregar `plaga_detectada`, todos los resultados tienen ese código exacto. |
+| RF-04 | El administrador debe poder crear y actualizar diagnósticos. | Alta | Un `POST` válido responde HTTP 201 y un `PATCH` válido responde HTTP 200; el cambio persiste al volver a consultar. |
+| RF-05 | El administrador debe poder eliminar un diagnóstico. | Media | `DELETE /api/diagnosticos/<uuid>/` responde HTTP 204 y una consulta posterior ya no devuelve ese UUID. |
+
+La API implementa estos recursos y operaciones. En el frontend nuevo de Semana 13, por ahora solo está construida la pantalla de listado; formulario, filtros y acciones administrativas se completarán después.
+
+### Requisitos no funcionales
+
+| ID | Requisito | Prioridad | Criterio de aceptación verificable |
+|---|---|---|---|
+| RNF-01 | Las consultas deben mantener un tiempo de respuesta acotado para un volumen de uso definido. | Media | Con 1,000 diagnósticos y 20 solicitudes concurrentes, el percentil 95 de `GET /api/diagnosticos/` es como máximo 2 segundos, medido con una prueba de carga. |
+| RNF-02 | La API debe proteger los datos por autenticación y permisos de parcela. | Alta | Sin credenciales responde HTTP 401; un agricultor que solicite una parcela ajena recibe HTTP 403. Es un criterio futuro: actualmente se usa `AllowAny`. |
+| RNF-03 | La interfaz debe ser usable en escritorio y móvil. | Media | En Chrome y Edge, a anchos de 360 px y 1280 px, se pueden completar las acciones disponibles sin contenido cortado ni desplazamiento horizontal de la página. |
+
+### Reglas de negocio
+
+| Regla | Aplicación en React | Aplicación en Django |
+|---|---|---|
+| La confianza de un diagnóstico debe estar entre 0 y 100, con hasta dos decimales. | El formulario puede restringir y explicar el valor para orientar al usuario. | Regla obligatoria: `DecimalField` y serializer rechazan valores fuera del rango. |
+| La latitud debe estar entre −90 y 90 y la longitud entre −180 y 180. | Mostrar coordenadas recibidas; al crear o editar una parcela, validar el formulario antes del envío. | Regla obligatoria: validadores de los campos del modelo `Parcela`. |
+| Cada diagnóstico debe pertenecer a una parcela existente. | En el formulario, seleccionar una parcela disponible y enviar su identificador. | Regla obligatoria: relación `ForeignKey`; el serializer verifica que la parcela referenciada exista. |
+| La URL de imagen es opcional; si se proporciona, debe tener formato de URL válido. | Permitir dejar el campo vacío y, si se ingresa, usar una entrada de URL con mensaje de validación. | Regla obligatoria: `URLField` del modelo y validación del serializer. |
+| Si se consulta el historial con fechas `desde` y `hasta`, ambas deben ser fechas válidas y `desde` no puede ser posterior a `hasta`. | Enviar fechas con formato ISO y evitar que el selector permita un rango invertido. | Regla obligatoria: las vistas del historial y del ViewSet validan el formato y el orden del rango, y responden HTTP 400 si no se cumple. |
+
+React mejora la experiencia con validación inmediata, pero Django debe volver a validar las reglas que protegen los datos porque las solicitudes pueden enviarse directamente a la API sin pasar por la interfaz.
+Las validaciones descritas en React son el comportamiento esperado al construir los formularios; la interfaz de Semana 13 todavía solo lista diagnósticos y no implementa formularios de parcelas, diagnósticos ni filtros.
+
+## Ejercicio 11 — Arquitectura y flujo principal
+
+### Arquitectura
+
+```text
+Agricultor / administrador
+        │
+        ▼
+React: formulario y panel de diagnósticos
+        │ Axios — petición HTTP con JSON
+        ▼
+Django REST Framework: URL → ViewSet → Serializer
+        │ valida parcela, fecha, plaga, confianza e imagen
+        ▼
+Django ORM
+        │ consulta o guarda
+        ▼
+SQLite
+        │ objeto serializado + estado HTTP
+        └──────────────────────────► React actualiza el panel
+```
+
+### Flujo principal: registrar un diagnóstico
+
+1. **React** recoge la parcela, fecha, código y nombre de la plaga, nivel de confianza y URL de imagen opcional; envía un `POST /api/diagnosticos/` con JSON.
+2. **Django REST Framework** enruta la petición al `DiagnosticoViewSet` y valida el JSON con `DiagnosticoSerializer`.
+3. En el servidor se comprueba que la parcela exista, que los campos requeridos tengan formato válido, que la confianza esté entre 0 y 100 con hasta dos decimales y que, si se envía, la imagen tenga una URL válida.
+4. Si los datos son válidos, el ORM guarda el diagnóstico relacionado con la parcela en SQLite y Django responde **HTTP 201** con el diagnóstico serializado.
+5. **React** agrega el registro recibido a la lista y muestra la confirmación. Si falla la validación, Django responde **HTTP 400** con los errores y React los presenta; no se guarda un diagnóstico inválido.
+
+En la interfaz de Semana 13 este formulario todavía está pendiente; el flujo describe la operación ya soportada por la API y el panel integrador de Semana 12.
+
+### Entidades previstas para modelar o completar en Semana 14
+
+- `Usuario`
+- `Parcela`
+- `Plaga`
+- `Diagnostico` — **principal**
+- `EvidenciaDiagnostico` — **detalle**
+
+`Parcela` y `Diagnostico` ya tienen modelos iniciales en Semana 11 y en la copia de Semana 13. En Semana 14 se puede revisar y ampliar ese esquema, e incorporar las entidades restantes. `EvidenciaDiagnostico` se plantea como detalle para permitir que un diagnóstico tenga una o más evidencias; hoy el modelo solo tiene una `imagen_url` opcional dentro de `Diagnostico`.
+
+## Ejercicio 12 — Apps Django por módulo
+
+Se crearon y registraron las apps `core`, `parcelas` y `diagnosticos`, adaptadas al dominio de Ojo d’Chakra. No se crearon `catalogo`, `clientes` ni `pedidos`, porque corresponden a una tienda y no al proyecto integrador. Se conserva `core` como app base del proyecto.
+
+La app `historial` se mantiene registrada para no romper la API funcional: por ahora contiene los modelos `Parcela` y `Diagnostico`, sus serializers, vistas, rutas y pruebas. Las apps `parcelas` y `diagnosticos` recién creadas son esqueletos vacíos; su objetivo es separar esos dominios gradualmente, no duplicar modelos todavía.
+
+```text
+src/semana13/backend/
+├── manage.py
+├── config/
+│   ├── settings.py
+│   └── urls.py
+├── core/                 App base, conservada y registrada
+├── parcelas/             App del módulo de parcelas, registrada
+├── diagnosticos/         App del módulo de diagnósticos, registrada
+└── historial/            API y modelos que siguen activos
+```
+
+La configuración `INSTALLED_APPS` está en `src/semana13/backend/config/settings.py` e incluye las apps propias:
+
+```python
+'core.apps.CoreConfig',
+'parcelas.apps.ParcelasConfig',
+'diagnosticos.apps.DiagnosticosConfig',
+'historial.apps.HistorialConfig',
+```
+
+Desde la carpeta del backend se ejecutó:
+
+```powershell
+python manage.py check
+```
+
+Salida:
+
+```text
+System check identified no issues (0 silenced).
+```
+
+`check` confirma que Django carga la configuración y las apps registradas sin errores. No mueve los modelos ni cambia las rutas actuales de `historial`.
+
+## Ejercicio 13 — Estructura React y mapa de rutas
+
+Se reutilizan `components/`, `pages/` y `src/api.js`, que ya están creados. Se agregaron archivos vacíos para las pantallas pendientes de Ojo d’Chakra; `DiagnosticosPage.jsx` se conserva implementada como pantalla de listado. Las páginas todavía vacías se documentan como propuestas y no se agregaron a las rutas activas de `App.jsx`.
+
+```text
+src/semana13/frontend/
+├── index.html
+├── package.json
+├── vite.config.js
+└── src/
+    ├── api.js
+    ├── App.jsx
+    ├── main.jsx
+    ├── components/
+    │   └── DiagnosticoCard.jsx
+    └── pages/
+        ├── DiagnosticosPage.jsx       Implementada: lista de diagnósticos
+        ├── ParcelasPage.jsx           Vacía: lista de parcelas
+        ├── HistorialParcelaPage.jsx   Vacía: historial de una parcela
+        └── DiagnosticoFormPage.jsx    Vacía: crear o editar diagnóstico
+```
+
+### Mapa de recursos API y pantallas React
+
+| Recurso / operación | Ruta API de Django (Semana 13: puerto 8002) | Ruta React | Estado de React |
+|---|---|---|---|
+| Listar parcelas | `GET /api/parcelas/` | `/parcelas` | Propuesta; `ParcelasPage.jsx` está vacía. |
+| Consultar historial de una parcela | `GET /api/parcelas/<uuid>/historial/` | `/parcelas/:parcelaId/historial` | Propuesta; `HistorialParcelaPage.jsx` está vacía. |
+| Listar diagnósticos y aplicar búsqueda/filtros | `GET /api/diagnosticos/?parcela=<uuid>&search=...&plaga_detectada=...` | `/diagnosticos?parcela=<uuid>&search=...` | La ruta `/diagnosticos` y el listado están implementados; los filtros del frontend están pendientes. |
+| Crear diagnóstico | `POST /api/diagnosticos/` | `/diagnosticos/nuevo` | Propuesta; `DiagnosticoFormPage.jsx` está vacía. |
+| Consultar, actualizar o eliminar diagnóstico | `GET`, `PATCH` o `DELETE /api/diagnosticos/<uuid>/` | `/diagnosticos/:id/editar` para consulta/edición; eliminar desde la misma pantalla | API implementada; pantalla y acciones React pendientes. |
+
+Las rutas de React son el diseño de navegación; salvo `/diagnosticos`, no están todavía conectadas en `App.jsx`. Las rutas de Django sí están expuestas por la API. Para probarla, el host local es `http://127.0.0.1:8002`, y `api.js` centraliza esa URL base para las peticiones del frontend.
+
 ## Carpetas relevantes
 
 ```text
@@ -348,7 +545,7 @@ src/
 │   │   └── src/integrador/     Panel React de Ojo d’Chakra
 │   └── README.md
 └── semana13/
-    ├── backend/                Proyecto Django independiente con la app historial
+    ├── backend/                Proyecto Django con core, parcelas, diagnosticos e historial
     ├── frontend/               Estructura inicial React y Axios
     └── README.md               Diseño y documentación de esta semana
 ```
